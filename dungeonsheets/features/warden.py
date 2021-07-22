@@ -310,7 +310,9 @@ class SaintedMantle(Feature):
     mantle. For the next minute, while you are conscious, you regain 5 hit
     points at the start of each of your turns. If you have less than half your
     hit points at the start of your turn, you instead regain 10 hit points.
-Once you use this ability, you can’t use it again until you finish a long rest.
+
+    Once you use this ability, you can’t use it again until you finish a long 
+    rest.
 
     """
 
@@ -322,20 +324,20 @@ class BattleTactics(Feature):
     """When you hear this call at 3rd level, you learn maneuvers that are
     fueled by special dice called battle dice. 
 
-    ***Maneuvers.*** You learn three maneuvers of your choice, which are
+    **Maneuvers.** You learn three maneuvers of your choice, which are
     detailed under “Maneuvers” below. Many maneuvers enhance an attack in some
     way. You can use only one maneuver per attack.  You learn two additional
     maneuvers of your choice at 6th and 13th level. Each time you gain a level
     in this class, you can also replace one maneuver you know with a different
     one.
 
-    ***Battle Dice.*** You have four battle dice, which are d8s. A battle die is
+    **Battle Dice.** You have four battle dice, which are d8s. A battle die is
     expended when you use it. You regain all of your expended battle dice when
     you finish a short or long rest.
 
     You gain another battle die at 6th level and one more at 13th level.
 
-    ***Saving Throws.*** Some of your maneuvers require your target to make a
+    **Saving Throws.** Some of your maneuvers require your target to make a
     saving throw to resist the maneuver’s effects. The saving throw DC is
     calculated as follows:
 
@@ -1102,6 +1104,11 @@ class Antimage(Feature):
 class ArmorProficiencyWarden(Feature):
     """You gain proficiency with heavy armor.
     """
+
+    def __init__(self, owner=None):
+        super().__init__(owner=owner)
+        if "heavy armor" not in self.owner.skill_proficiencies:
+            self.owner.armor_proficiencies.append("armor")
 
     name = "Armor Proficiency"
     source = "Warden (Sentinel's Stand)"
