@@ -42,6 +42,7 @@ __all__ = (
     "Rogue",
     "Sorceror",
     "Warlock",
+    "Warden",
     "Wizard",
 )
 
@@ -785,7 +786,7 @@ class Character(Entity):
         if len(my_weapons) == 0 or hasattr(self, "Monk"):
             my_weapons.append(weapons.Unarmed(wielder=self))
         return my_weapons
-    
+
     @property
     def hit_dice(self):
         """What type and how many dice to use for re-gaining hit points.
