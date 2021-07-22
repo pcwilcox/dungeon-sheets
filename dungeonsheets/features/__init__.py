@@ -15,4 +15,5 @@ from dungeonsheets.features.ranger import *
 from dungeonsheets.features.rogue import *
 from dungeonsheets.features.sorceror import *
 from dungeonsheets.features.warlock import *
+from dungeonsheets.features.warden import *
 from dungeonsheets.features.wizard import *

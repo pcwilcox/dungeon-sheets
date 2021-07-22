@@ -28,12 +28,12 @@ class Protection(Feature):
 
 
 # UA
-class BlindingFighting(Feature):
+class BlindFighting(Feature):
     """Being unable to see a creature doesn’t impose disadvantage on your attack
     rolls against it, provided the creature isn’t hidden from you.
     """
 
-    name = "Fighting Style (Blinding Fighting)"
+    name = "Fighting Style (Blind Fighting)"
     source = "Fighter"
 
 
@@ -138,7 +138,7 @@ class FighterFightingStyle(FeatureSelector):
         "two-weapon fighting": TwoWeaponFighting,
         "two-weapon": TwoWeaponFighting,
         "dual wield": TwoWeaponFighting,
-        "blinding fighting": BlindingFighting,
+        "blind fighting": BlindFighting,
         "close quarters shooter": CloseQuartersShooter,
         "interception": Interception,
         "mariner": Mariner,
