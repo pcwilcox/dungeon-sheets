@@ -65,7 +65,7 @@ class WardenFightingStyle(FeatureSelector):
         "Protection": Protection,
         "Titan Fighting": TitanFighting,
     }
-    name = "Fighting Style (Select One)"
+    name = "Fighting Style"
     source = "Warden"
 
 
@@ -759,21 +759,6 @@ class LibrarianOfTheEternal(Feature):
 
     name = "Librarian of the Eternal"
     source = "Warden (Loreseeker)"
-
-
-class Darkvision(Feature):
-    """Starting when you hear this call at 3rd level, you can see in dim
-    light within 60 feet of you as if it were bright light, and in darkness as
-    if it were dim light. You can’t discern color in darkness, only shades of
-    gray. If you already possess darkvision, its range increases by 30 feet.
-
-    Starting at 13th level, you can see through magical, as well as
-    nonmagical, darkness.
-
-    """
-
-    name = "Darkvision"
-    source = "Warden (Nightgaunt)"
 
 
 class MarkedForDeath(Feature):
