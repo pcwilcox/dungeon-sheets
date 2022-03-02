@@ -2,6 +2,10 @@ from collections import defaultdict
 
 from dungeonsheets import features as feats
 from dungeonsheets import spells, weapons
+from dungeonsheets.content_registry import default_content_registry
+
+
+default_content_registry.add_module(__name__)
 
 
 class Race:
@@ -130,6 +134,9 @@ class DarkElf(_Elf):
         feats.DrowMagic,
     )
     spells_known = (spells.DancingLights,)
+
+
+Drow = DarkElf
 
 
 # Halflings

@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+"""Program to take character definitions and build a PDF of the
+character sheet."""
+
 import logging
 import argparse
 import os
@@ -19,8 +22,8 @@ from dungeonsheets import (
     epub,
     monsters,
     forms,
+    random_tables,
 )
-from dungeonsheets.forms import mod_str
 from dungeonsheets.content_registry import find_content
 from dungeonsheets.fill_pdf_template import (
     create_character_pdf_template,
@@ -28,10 +31,8 @@ from dungeonsheets.fill_pdf_template import (
     create_spells_pdf_template,
 )
 from dungeonsheets.character import Character
-from dungeonsheets.entity import Entity
+from dungeonsheets.content import Creature
 
-"""Program to take character definitions and build a PDF of the
-character sheet."""
 
 log = logging.getLogger(__name__)
 
@@ -55,7 +56,8 @@ jinja_env = forms.jinja_environment()
 jinja_env.filters["rst_to_latex"] = latex.rst_to_latex
 jinja_env.filters["rst_to_html"] = epub.rst_to_html
 jinja_env.filters["to_heading_id"] = epub.to_heading_id
-
+jinja_env.filters["boxed"] = latex.rst_to_boxlatex
+jinja_env.filters["spellsheetparser"] = latex.msavage_spell_info
 
 # Custom types
 File = Union[Path, str]
@@ -69,6 +71,7 @@ class CharacterRenderer():
         template = jinja_env.get_template(self.template_name.format(suffix=content_suffix))
         return template.render(character=character,
                                use_dnd_decorations=use_dnd_decorations, ordinals=ORDINALS)
+
 
 create_character_sheet_content = CharacterRenderer("character_sheet_template.{suffix}")
 create_subclasses_content = CharacterRenderer("subclasses_template.{suffix}")
@@ -86,13 +89,13 @@ def create_monsters_content(
 ) -> str:
     # Convert strings to Monster objects
     template = jinja_env.get_template(f"monsters_template.{suffix}")
-    spell_list = [spell for monster in monsters for spell in monster.spells]
+    spell_list = [Spell() for monster in monsters for Spell in monster.spells]
     return template.render(monsters=monsters,
                            use_dnd_decorations=use_dnd_decorations, spell_list=spell_list)
 
 
 def create_party_summary_content(
-    party: Sequence[Entity],
+    party: Sequence[Creature],
     summary_rst: str,
     suffix: str,
     use_dnd_decorations: bool = False,
@@ -104,16 +107,31 @@ def create_party_summary_content(
     )
 
 
-
-
 def create_random_tables_content(
-    conjure_animals: bool,
+    tables: Sequence[random_tables.RandomTable],
     suffix: str,
     use_dnd_decorations: bool = False,
 ) -> str:
     template = jinja_env.get_template(f"random_tables_template.{suffix}")
     return template.render(
-        conjure_animals=conjure_animals, use_dnd_decorations=use_dnd_decorations
+        tables=tables,
+        use_dnd_decorations=use_dnd_decorations,
+    )
+
+
+def create_extra_gm_content(sections: Sequence, suffix: str, use_dnd_decorations: bool=False):
+    """Create content for arbitrary additional text provided in a GM sheet.
+    
+    Parameters
+    ==========
+    sections
+      Subclasses of Content that will each be included as new sections
+      in the output document.
+    
+    """
+    template = jinja_env.get_template(f"extra_gm_content.{suffix}")
+    return template.render(
+        sections=sections, use_dnd_decorations=use_dnd_decorations
     )
 
 
@@ -123,6 +141,7 @@ def make_sheet(
     output_format: str = "pdf",
     fancy_decorations: bool = False,
     debug: bool = False,
+    use_tex_template: bool = False,
 ):
     """Make a character or GM sheet into a PDF.
     Parameters
@@ -136,10 +155,12 @@ def make_sheet(
       Either "pdf" or "epub" to generate a PDF file or an EPUB file.
     fancy_decorations : bool, optional
       Use fancy page layout and decorations for extra sheets, namely
-      the dnd style file: https://github.com/rpgtex/DND-5e-LaTeX-Template.
+      the dnd style file: ://github.com/rpgtex/DND-5e-LaTeX-Template.
     debug : bool, optional
       Provide extra info and preserve temporary files.
-
+    use_tex_template : bool, optional
+      (experimental) Use the DnD LaTeX character sheet instead of the fillable PDF.
+    
     """
     # Parse the file
     sheet_file = Path(sheet_file)
@@ -159,6 +180,7 @@ def make_sheet(
             output_format=output_format,
             fancy_decorations=fancy_decorations,
             debug=debug,
+            use_tex_template=use_tex_template
         )
     return ret
 
@@ -206,15 +228,22 @@ def make_gm_sheet(
     # Add the party stats table and session summary
     party = []
     for char_file in gm_props.pop("party", []):
-        # Resolve the file path
-        char_file = Path(char_file)
-        if not char_file.is_absolute():
-            char_file = gm_file.parent / char_file
-        char_file = char_file.resolve()
-        # Load the character file
-        log.debug(f"Loading party member: {char_file}")
-        character_props = readers.read_sheet_file(char_file)
-        member = _char.Character.load(character_props)
+        # Check if it's already resolved
+        if isinstance(char_file, Creature):
+            member = char_file
+        elif isinstance(char_file, type) and issubclass(char_file, Creature):
+            # Needs to be instantiated
+            member = char_file()
+        else:
+            # Resolve the file path
+            char_file = Path(char_file)
+            if not char_file.is_absolute():
+                char_file = gm_file.parent / char_file
+            char_file = char_file.resolve()
+            # Load the character file
+            log.debug(f"Loading party member: {char_file}")
+            character_props = readers.read_sheet_file(char_file)
+            member = _char.Character.load(character_props)
         party.append(member)
     summary = gm_props.pop("summary", "")
     content.append(
@@ -224,6 +253,12 @@ def make_gm_sheet(
             suffix=content_suffix,
             use_dnd_decorations=fancy_decorations,
         )
+    )
+    # Parse any extra homebrew sections, etc.
+    content.append(
+        create_extra_gm_content(sections=gm_props.pop("extra_content", []),
+                                suffix=content_suffix,
+                                use_dnd_decorations=fancy_decorations)
     )
     # Add the monsters
     monsters_ = []
@@ -248,12 +283,13 @@ def make_gm_sheet(
             )
         )
     # Add the random tables
-    random_tables = [
-        s.replace(" ", "_").lower() for s in gm_props.pop("random_tables", [])
+    tables = [
+        find_content(s, valid_classes=[random_tables.RandomTable])
+        for s in gm_props.pop("random_tables", [])
     ]
     content.append(
         create_random_tables_content(
-            conjure_animals=("conjure_animals" in random_tables),
+            tables=tables,
             suffix=content_suffix,
             use_dnd_decorations=fancy_decorations,
         )
@@ -351,12 +387,12 @@ def make_character_content(
                                                       content_suffix=content_format,
                                                       use_dnd_decorations=fancy_decorations))
     # Create a list of subcasses, features, spells, etc
-    if character.subclasses:
+    if len(getattr(character, 'subclasses', [])) > 0:
         content.append(create_subclasses_content(character,
                                                  content_suffix=content_format,
                                                  use_dnd_decorations=fancy_decorations)
                        )
-    if character.features:
+    if len(getattr(character, 'features', [])) > 0:        
         content.append(
             create_features_content(character, content_suffix=content_format, use_dnd_decorations=fancy_decorations)
         )
@@ -386,6 +422,27 @@ def make_character_content(
     )        
     return content
 
+def msavage_sheet(character, basename, portrait_file="", debug=False):
+    """Another adaption. All changes can be easily included as options
+    in the orignal functions, though."""
+    
+    # Load image file if present
+    portrait_command=""
+    if character.portrait and portrait_file:
+        portrait_command = r"\includegraphics[width=5.75cm]{"+ \
+                            portrait_file + "}"
+    
+    
+    tex = jinja_env.get_template("MSavage_template.tex").render(
+            char=character, portrait=portrait_command
+            )
+    latex.create_latex_pdf(
+                tex,
+                basename=basename,
+                keep_temp_files=debug,
+                use_dnd_decorations=True,
+                comm1="xelatex"
+            )
 
 def make_character_sheet(
     char_file: Union[str, Path],
@@ -394,6 +451,7 @@ def make_character_sheet(
     output_format: str = "pdf",
     fancy_decorations: bool = False,
     debug: bool = False,
+    use_tex_template: bool = False,
 ):
     """Prepare a PDF character sheet from the given character file.
 
@@ -420,11 +478,15 @@ def make_character_sheet(
     if character is None:
         character_props = readers.read_sheet_file(char_file)
         character = _char.Character.load(character_props)
+    # Load image file if present
+    portrait_file=""
+    if character.portrait:
+        portrait_file=char_file.stem + ".jpeg"
     # Set the fields in the FDF
     basename = char_file.stem
     char_base = basename + "_char"
     person_base = basename + "_person"
-    sheets = [char_base + ".pdf", person_base + ".pdf"]
+    sheets = [char_base + ".pdf"]
     pages = []
     # Prepare the tex/html content
     content_suffix = format_suffixes[output_format]
@@ -434,16 +496,24 @@ def make_character_sheet(
                                      fancy_decorations=fancy_decorations)
     # Typeset combined LaTeX file
     if output_format == "pdf":
+        if use_tex_template:
+            msavage_sheet(
+                character=character, basename=char_base,
+                portrait_file=portrait_file, debug=debug
+                )
         # Fillable PDF forms
-        char_pdf = create_character_pdf_template(
+        else:
+            sheets.append(person_base + ".pdf")
+            char_pdf = create_character_pdf_template(
             character=character, basename=char_base, flatten=flatten
-        )
-        pages.append(char_pdf)
-        person_pdf = create_personality_pdf_template(
-            character=character, basename=person_base, flatten=flatten
-        )
-        pages.append(person_pdf)
-        if character.is_spellcaster:
+            )
+            pages.append(char_pdf)
+            person_pdf = create_personality_pdf_template(
+                character=character, basename=person_base, 
+                portrait_file=portrait_file, flatten=flatten
+                )
+            pages.append(person_pdf)
+        if character.is_spellcaster and not(use_tex_template):
             # Create spell sheet
             spell_base = "{:s}_spells".format(basename)
             create_spells_pdf_template(
@@ -462,7 +532,7 @@ def make_character_sheet(
                 )
                 sheets.append(features_base + ".pdf")
                 final_pdf = f"{basename}.pdf"
-                merge_pdfs(sheets, final_pdf, clean_up=True)
+                merge_pdfs(sheets, final_pdf, clean_up=not(debug))
         except exceptions.LatexNotFoundError:
             log.warning(
                 f"``pdflatex`` not available. Skipping features for {character.name}"
@@ -518,6 +588,7 @@ def _build(filename, args) -> int:
             output_format=args.output_format,
             debug=args.debug,
             fancy_decorations=args.fancy_decorations,
+            use_tex_template=args.use_tex_template,
         )
     except exceptions.CharacterFileFormatError:
         # Only raise the failed exception if this file is explicitly given
@@ -564,6 +635,13 @@ def main(args=None):
             "Render extra pages using fancy decorations "
             "(experimental, requires https://github.com/rpgtex/DND-5e-LaTeX-Template)"
         ),
+    )
+    parser.add_argument(
+        "--tex-template",
+        "-T",
+        action="store_true",
+        help="(experimental) Build character sheets using the LaTeX template instead of the fillable PDF.",
+        dest="use_tex_template",
     )
     parser.add_argument(
         "--output-format",

@@ -50,13 +50,42 @@ Random Tables
 =============
 
 Random tables can be used in-game to make decisions on-the-fly. These
-tables can be included in the PDF using ``random_tables``. Currently the following random tables are available.
+tables can be included in the PDF using ``random_tables``. Currently
+the following random tables are available.
 
 - **"conjure animals"** - A list of options to choose from when a
   player casts the *Conjure Animals* spell.
+- **"treasure"** - Tables for rolling treasure dropped by individuals
+  or hoards.
 
 .. code-block:: python
    :caption: Example:	  
    
    random_tables = ["conjure animals"]	 
 
+Adding Arbitrary Content
+========================
+
+Additional content can be included in arbitrary sections that get
+added after the summary of the GM notes output. The ``extra_content``
+attribute can accept a list of content that will be rendered as
+sections in the output document. Any subclass of *mechanics.Content*
+can be used. The section heading will be the *name* attribute of each
+piece of content, and the body will be the docstring.
+
+For example, the following entry will be rendered as a new section
+with the heading "The Bar Fight":
+
+.. code-block:: python
+
+    from dungeonsheets import mechanics
+
+    class BarFight(mechanics.Content):
+        """If the characters decide to go to the *Alliance Friendly Bar*,
+        they will probably have to fight their way out against 5 enemies
+	(3 Veteran, 2 Soldier).
+
+        """
+        name = "The Bar Fight"
+
+    extra_content = [BarFight, ]

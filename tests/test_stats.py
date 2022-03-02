@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from dungeonsheets import stats, character
+from dungeonsheets import stats, character, magic_items
 
 
 class TestStats(TestCase):
@@ -8,6 +8,19 @@ class TestStats(TestCase):
         self.assertEqual(stats.mod_str(-3), "-3")
         self.assertEqual(stats.mod_str(0), "+0")
         self.assertEqual(stats.mod_str(2), "+2")
+        self.assertEqual(stats.mod_str(None), "N/A")
+
+    def test_str_to_list(self):
+        char = character.Character(equipment="a, b, c")
+        # Regular string
+        self.assertEqual(stats.str_to_list(char, "equipment"), ["a", "b", "c"])
+        # Alternate separator
+        char.equipment = "a; b; c"
+        self.assertEqual(stats.str_to_list(char, "equipment", sep=";"), ["a", "b", "c"])
+        # No attribute
+        self.assertEqual(stats.str_to_list(char, "inventory"), [])
+        # Not a string
+        self.assertEqual(stats.str_to_list(char, "hp_max"), char.hp_max)
 
     def test_saving_throw(self):
         # Try it with an ST proficiency
@@ -18,6 +31,9 @@ class TestStats(TestCase):
 
         my_class = MyClass()
         self.assertEqual(my_class.strength.saving_throw, 4)
+        # Try it with a magic item
+        my_class.magic_items.append(magic_items.RingOfProtection())
+        self.assertEqual(my_class.strength.saving_throw, 5)
 
     def test_modifier(self):
         class MyCharacter(character.Character):

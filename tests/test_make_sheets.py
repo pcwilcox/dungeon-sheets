@@ -2,7 +2,7 @@ import unittest
 import os
 from pathlib import Path
 
-from dungeonsheets import make_sheets, character, monsters
+from dungeonsheets import make_sheets, character, monsters, random_tables
 
 
 EG_DIR = Path(__file__).parent.parent.resolve() / "examples"
@@ -22,7 +22,7 @@ class MakeSheetsTestCase(unittest.TestCase):
 
     def test_main(self):
         make_sheets.main(args=[str(CHARFILE), "--debug"])
-    
+
     def test_make_sheets(self):
         # Character PDF
         make_sheets.make_sheet(sheet_file=CHARFILE)
@@ -76,6 +76,7 @@ class EpubOutputTestCase(unittest.TestCase):
 
     def test_character_html_content(self):
         my_char = self.new_character()
+        my_char.magic_items_text
         html = make_sheets.make_character_content(character=my_char,
                                                   content_format="html")
         html = "".join(html)
@@ -134,11 +135,24 @@ class VashtaNerada(monsters.Monster):
     damage_immunities = "Bludgeoning"
     damage_resistances = "Lightning"
     damage_vulnerabilities = "Wood-based"
-    challenge_rating = 93
+    challenge_rating = 30
     spells = ["wish"]
 
 
 class HtmlCreatorTestCase(unittest.TestCase):
+    def new_character(self):
+        char = character.Character(
+            name="Dr. Who",
+            classes=["Monk", "Druid", "Artificer"],
+            levels=[1, 1, 1],
+            subclasses=["way of the open hand", None, None],
+            magic_items=["cloak of protection"],
+            spells=["invisibility"],
+            wild_shapes=["crocodile"],
+            infusions=["boots of the winding path"]
+        )
+        return char
+    
     def test_create_monsters_html(self):
         monsters_ = [monsters.Priest()]
         html = make_sheets.create_monsters_content(monsters=monsters_, suffix="html")
@@ -158,6 +172,7 @@ class HtmlCreatorTestCase(unittest.TestCase):
         self.assertIn(r"Damage Vulnerabilities", html)
         self.assertIn(r"Senses", html)
         self.assertIn(r"Challenge", html)
+        self.assertIn(r"(155,000 XP)", html)
         self.assertIn(r"Languages", html)
         self.assertIn(r"Skills", html)
         self.assertIn(r"petrified", html)
@@ -167,10 +182,30 @@ class HtmlCreatorTestCase(unittest.TestCase):
         self.assertIn(r"Wish", html)        
         # Check fancy extended properties
         html = make_sheets.create_monsters_content(monsters=monsters_,
-                                                  suffix="html",
-                                                  use_dnd_decorations=True)
-    
-    
+                                                   suffix="html",
+                                                   use_dnd_decorations=True)
+
+    def test_create_party_summary_html(self):
+        char = self.new_character()
+        html = make_sheets.create_party_summary_content(party=[char], suffix="html", summary_rst="")
+        self.assertIn('<h1 id="gm-party">Party</h1>', html)
+        self.assertIn(char.name, html)
+        # Check for passive perception/insight/investigation
+        self.assertIn('<th>Pass. Per.</th>', html)
+        self.assertIn(f'<td class="passive-perception">{10+char.perception.modifier}</td>', html)
+        self.assertIn('<th>Pass. Ins.</th>', html)
+        self.assertIn(f'<td class="passive-insight">{10+char.insight.modifier}</td>', html)        
+        self.assertIn('<th>Pass. Inv.</th>', html)
+        self.assertIn(f'<td class="passive-investigation">{10+char.investigation.modifier}</td>', html)
+
+    def test_create_extra_gm_content(self):
+        class MySection():
+            name = "My D&D Homebrew Content"
+
+        html = make_sheets.create_extra_gm_content(sections=[MySection], suffix="html")
+        self.assertIn('<h1 id="extra-My-DD-Homebrew-Content">', html)
+        tex = make_sheets.create_extra_gm_content(sections=[MySection], suffix="tex")
+        self.assertIn(r'\section*{My D&D Homebrew Content', tex)
 
 
 class TexCreatorTestCase(unittest.TestCase):
@@ -244,6 +279,7 @@ class TexCreatorTestCase(unittest.TestCase):
         self.assertIn(r"Damage Vulnerabilities:", tex)
         self.assertIn(r"Senses:", tex)
         self.assertIn(r"Challenge:", tex)
+        self.assertIn(r"(155,000 XP)", tex)
         self.assertIn(r"Languages:", tex)
         self.assertIn(r"Skills:", tex)
         # Check fancy extended properties
@@ -263,6 +299,24 @@ class TexCreatorTestCase(unittest.TestCase):
         tex = make_sheets.create_party_summary_content(party=[char], suffix="tex", summary_rst="")
         self.assertIn(r"\section*{Party}", tex)
         self.assertIn(char.name, tex)
+        # Check for passive perception/insight/investigation
+        print(char.passive_insight, char.passive_perception, char.passive_investigation)
+        self.assertIn(f'& {char.passive_insight} % Passive insight', tex)
+        self.assertIn(f'& {char.passive_perception} % Passive perception', tex)
+        self.assertIn(f'& {char.passive_investigation} % Passive investigation', tex)
+    
+    def test_create_party_summary_tex_fancy(self):
+        char = self.new_character()
+        tex = make_sheets.create_party_summary_content(party=[char],
+                                                       suffix="tex",
+                                                       summary_rst="",
+                                                       use_dnd_decorations=True)
+        self.assertIn(r"\section*{Party}", tex)
+        self.assertIn(char.name, tex)
+        # Check for passive perception/insight/investigation
+        self.assertIn(f'& {char.passive_insight} % Passive insight', tex)
+        self.assertIn(f'& {char.passive_perception} % Passive perception', tex)
+        self.assertIn(f'& {char.passive_investigation} % Passive investigation', tex)
     
     def test_create_summary_tex(self):
         rst = "The party's create *adventure*."
@@ -273,7 +327,7 @@ class TexCreatorTestCase(unittest.TestCase):
 
     def test_random_tables_tex(self):
         tex = make_sheets.create_random_tables_content(
+            tables=[random_tables.ConjureAnimals],
             suffix="tex",
-            conjure_animals=True,
         )
         self.assertIn(r"\subsection*{Conjure Animals}", tex)

@@ -6,7 +6,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 body {
     /* background: #f4ecdb; */
-    background-image: url("../images/paper.jpg");
+    /* background-image: url("../images/paper.jpg"); */
+    background-size: 100%;
+}
+p {
+    text-align: justify;
+    text-justify: inter-word;
 }
 table {
     /* background: #ECEEE3; */
@@ -23,9 +28,13 @@ tr:nth-child(even) {
     border-style: solid;
     margin: 16px 0px;
     padding: 8px;
+    max-width: 35em;
 }
 .stat-block .details {
     color: #58180d;
+}
+.stat-block p {
+    margin-right: 1em;
 }
 .stat-block h2 {
     margin-bottom: 0px;
@@ -36,7 +45,6 @@ tr:nth-child(even) {
 
 [% else %]
 /* Without Fancy decorations */
-
 th {
   border-style: solid;
   border-width: 0px;
@@ -44,7 +52,12 @@ th {
 }
 [% endif %]
 /* End fancy decorations */
-
+body {
+    margin: 1em;
+}
+p {
+    max-width: 35em;
+}
 /* Spell lists */
 dl.spell-slots {
     margin-top: 0.5em;
@@ -143,14 +156,14 @@ table p {
 }
 
 th {
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
   text-align: center;
 }
 
 td {
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
   text-align: center;
 }
 

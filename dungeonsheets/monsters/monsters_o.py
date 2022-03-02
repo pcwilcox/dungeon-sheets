@@ -10,26 +10,36 @@ from dungeonsheets.stats import Ability
 
 class OchreJelly(Monster):
     """
+
     Amorphous.
-
-      The jelly can move through a space as narrow as 1 inch wide without squeezing.
-
+      The jelly can move through a space as narrow as 1 inch wide without
+      squeezing.
     Spider Climb.
+      The jelly can climb difficult surfaces, including upside down on
+      ceilings, without needing to make an ability check.
 
-      The jelly can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check.
+    # Actions
 
     Pseudopod.
+      Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 9 (2d6 +
+      2) bludgeoning damage plus 3 (1d6) acid damage.
 
-      Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 9 (2d6 + 2) bludgeoning damage plus 3 (1d6) acid damage.
+    # Reactions
+
+    Split.
+      When a jelly that is Medium or larger is subjected to lightning or
+      slashing damage, it splits into two new jellies if it has at least 10
+      hit points. Each new jelly has hit points equal to half the original
+      jelly's, rounded down. New jellies are one size smaller than the
+      original jelly.
     """
-
-    name = "Ochre Jelly"
-    description = "Large ooze, unaligned"
+    name = 'Ochre Jelly'
+    description = 'Large ooze, unaligned'
     challenge_rating = 2
     armor_class = 8
-    skills = ""
-    senses = "Blindsight 60 ft. (blind beyond this radius), Passive Perception 8"
-    languages = ""
+    skills = ''
+    senses = 'Blindsight 60 ft. (blind beyond this radius), Passive Perception 8'
+    languages = ''
     strength = Ability(15)
     dexterity = Ability(6)
     constitution = Ability(14)
@@ -40,40 +50,47 @@ class OchreJelly(Monster):
     swim_speed = 0
     fly_speed = 0
     climb_speed = 10
+    burrow_speed = 0
     hp_max = 45
-    hit_dice = "6d10"
+    hit_dice = '6d10 + 12'
+    condition_immunities = 'blinded, charmed, blinded, exhaustion, frightened, prone'
+    damage_immunities = 'lightning, slashing'
+    damage_resistances = 'acid'
+    damage_vulnerabilities = ''
+    spells = []
 
 
 class Octopus(Monster):
     """
+
     Hold Breath.
-
       While out of water, the octopus can hold its breath for 30 minutes.
-
     Underwater Camouflage.
-
-      The octopus has advantage on Dexterity (Stealth) checks made while underwater.
-
+      The octopus has advantage on Dexterity (Stealth) checks made while
+      underwater.
     Water Breathing.
-
       The octopus can breathe only underwater.
 
+    # Actions
+
     Tentacles.
-
-      Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 1 bludgeoning damage, and the target is grappled (escape DC 10). Until this grapple ends, the octopus can't use its tentacles on another target.
-
+      Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 1
+      bludgeoning damage, and the target is grappled (escape DC 10). Until
+      this grapple ends, the octopus can't use its tentacles on another
+      target.
     Ink Cloud.
-
-      A 5-foot-radius cloud of ink extends all around the octopus if it is underwater. The area is heavily obscured for 1 minute, although a significant current can disperse the ink. After releasing the ink, the octopus can use the Dash action as a bonus action.
+      A 5-foot-radius cloud of ink extends all around the octopus if it is
+      underwater. The area is heavily obscured for 1 minute, although a
+      significant current can disperse the ink. After releasing the ink, the
+      octopus can use the Dash action as a bonus action.
     """
-
-    name = "Octopus"
-    description = "Small beast, unaligned"
+    name = 'Octopus'
+    description = 'Small beast, unaligned'
     challenge_rating = 0
     armor_class = 12
-    skills = "Perception +2, Stealth +4"
-    senses = "Darkvision 30 ft., Passive Perception 12"
-    languages = ""
+    skills = 'Perception +2, Stealth +4'
+    senses = 'Darkvision 30 ft., Passive Perception 12'
+    languages = ''
     strength = Ability(4)
     dexterity = Ability(15)
     constitution = Ability(11)
@@ -84,28 +101,35 @@ class Octopus(Monster):
     swim_speed = 30
     fly_speed = 0
     climb_speed = 0
+    burrow_speed = 0
     hp_max = 3
-    hit_dice = "1d6"
+    hit_dice = '1d6 + 0'
+    condition_immunities = ''
+    damage_immunities = ''
+    damage_resistances = ''
+    damage_vulnerabilities = ''
+    spells = []
 
 
 class Ogre(Monster):
     """
+
+    # Actions
+
     Greatclub.
-
-      Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.
-
+      Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8
+      + 4) bludgeoning damage.
     Javelin.
-
-      Melee or Ranged Weapon Attack: +6 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 11 (2d6 + 4) piercing damage.
+      Melee or Ranged Weapon Attack: +6 to hit, reach 5 ft. or range 30/120
+      ft., one target. Hit: 11 (2d6 + 4) piercing damage.
     """
-
-    name = "Ogre"
-    description = "Large giant, chaotic evil"
+    name = 'Ogre'
+    description = 'Large giant, chaotic evil'
     challenge_rating = 2
     armor_class = 11
-    skills = ""
-    senses = "Darkvision 60 ft., Passive Perception 8"
-    languages = "Common, Giant"
+    skills = ''
+    senses = 'Darkvision 60 ft., Passive Perception 8'
+    languages = 'Common, Giant'
     strength = Ability(19)
     dexterity = Ability(8)
     constitution = Ability(16)
@@ -116,27 +140,37 @@ class Ogre(Monster):
     swim_speed = 0
     fly_speed = 0
     climb_speed = 0
+    burrow_speed = 0
     hp_max = 59
-    hit_dice = "7d10"
+    hit_dice = '7d10 + 21'
+    condition_immunities = ''
+    damage_immunities = ''
+    damage_resistances = ''
+    damage_vulnerabilities = ''
+    spells = []
 
 
 class OgreZombie(Monster):
     """
-    Undead Fortitude.
 
-      If damage reduces the zombie to 0 hit points, it must make a Constitution saving throw with a DC of 5+the damage taken, unless the damage is radiant or from a critical hit. On a success, the zombie drops to 1 hit point instead.
+    Undead Fortitude.
+      If damage reduces the zombie to 0 hit points, it must make a
+      Constitution saving throw with a DC of 5+the damage taken, unless the
+      damage is radiant or from a critical hit. On a success, the zombie
+      drops to 1 hit point instead.
+
+    # Actions
 
     Morningstar.
-
-      Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.
+      Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8
+      + 4) bludgeoning damage.
     """
-
-    name = "Ogre Zombie"
-    description = "Large undead, neutral evil"
+    name = 'Ogre Zombie'
+    description = 'Large undead, neutral evil'
     challenge_rating = 2
     armor_class = 8
-    skills = ""
-    senses = "Darkvision 60 ft., Passive Perception 8"
+    skills = ''
+    senses = 'Darkvision 60 ft., Passive Perception 8'
     languages = "understands Common and Giant but can't speak"
     strength = Ability(19)
     dexterity = Ability(6)
@@ -148,49 +182,61 @@ class OgreZombie(Monster):
     swim_speed = 0
     fly_speed = 0
     climb_speed = 0
+    burrow_speed = 0
     hp_max = 85
-    hit_dice = "9d10"
+    hit_dice = '9d10 + 36'
+    condition_immunities = 'poisoned'
+    damage_immunities = 'poison'
+    damage_resistances = ''
+    damage_vulnerabilities = ''
+    spells = []
 
 
 class Oni(Monster):
     """
+
     Innate Spellcasting.
-
-      The oni's innate spellcasting ability is Charisma (spell save DC 13). The oni can innately cast the following spells, requiring no material components:
-
-    At will: darkness, invisibility
-    1/day each: charm person, cone of cold, gaseous form, sleep
-
+      The oni's innate spellcasting ability is Charisma (spell save DC 13).
+      The oni can innately cast the following spells, requiring no material
+      components:
+      
+  
+      
+      At will: darkness, invisibility
+      
+      1/day each: charm person, cone of cold, gaseous form, sleep
     Magic Weapons.
-
       The oni's weapon attacks are magical.
-
     Regeneration.
+      The oni regains 10 hit points at the start of its turn if it has at
+      least 1 hit point.
 
-      The oni regains 10 hit points at the start of its turn if it has at least 1 hit point.
+    # Actions
 
     Multiattack.
-
       The oni makes two attacks, either with its claws or its glaive.
-
-    **Claw (Oni Form Only)**: Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) slashing damage.
-
+    Claw (Oni Form Only).
+      Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 8 (1d8 +
+      4) slashing damage.
     Glaive.
-
-      Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) slashing damage, or 9 (1d10 + 4) slashing damage in Small or Medium form.
-
+      Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15
+      (2d10 + 4) slashing damage, or 9 (1d10 + 4) slashing damage in Small
+      or Medium form.
     Change Shape.
-
-      The oni magically polymorphs into a Small or Medium humanoid, into a Large giant, or back into its true form. Other than its size, its statistics are the same in each form. The only equipment that is transformed is its glaive, which shrinks so that it can be wielded in humanoid form. If the oni dies, it reverts to its true form, and its glaive reverts to its normal size.
+      The oni magically polymorphs into a Small or Medium humanoid, into a
+      Large giant, or back into its true form. Other than its size, its
+      statistics are the same in each form. The only equipment that is
+      transformed is its glaive, which shrinks so that it can be wielded in
+      humanoid form. If the oni dies, it reverts to its true form, and its
+      glaive reverts to its normal size.
     """
-
-    name = "Oni"
-    description = "Large giant, lawful evil"
+    name = 'Oni'
+    description = 'Large giant, lawful evil'
     challenge_rating = 7
     armor_class = 16
-    skills = "Arcana +5, Deception +8, Perception +4"
-    senses = "Darkvision 60 ft., Passive Perception 14"
-    languages = "Common, Giant"
+    skills = 'Arcana +5, Deception +8, Perception +4'
+    senses = 'Darkvision 60 ft., Passive Perception 14'
+    languages = 'Common, Giant'
     strength = Ability(19)
     dexterity = Ability(11)
     constitution = Ability(16)
@@ -201,32 +247,39 @@ class Oni(Monster):
     swim_speed = 0
     fly_speed = 30
     climb_speed = 0
+    burrow_speed = 0
     hp_max = 110
-    hit_dice = "13d10"
+    hit_dice = '13d10 + 39'
+    condition_immunities = ''
+    damage_immunities = ''
+    damage_resistances = ''
+    damage_vulnerabilities = ''
+    spells = []
 
 
 class Orc(Monster):
     """
-    Aggressive.
 
-      As a bonus action, the orc can move up to its speed toward a hostile creature that it can see.
+    Aggressive.
+      As a bonus action, the orc can move up to its speed toward a hostile
+      creature that it can see.
+
+    # Actions
 
     Greataxe.
-
-      Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 9 (1d12 + 3) slashing damage.
-
+      Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 9 (1d12
+      + 3) slashing damage.
     Javelin.
-
-      Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 6 (1d6 + 3) piercing damage.
+      Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 30/120
+      ft., one target. Hit: 6 (1d6 + 3) piercing damage.
     """
-
-    name = "Orc"
-    description = "Medium humanoid, chaotic evil"
+    name = 'Orc'
+    description = 'Medium humanoid, chaotic evil'
     challenge_rating = 0.5
     armor_class = 13
-    skills = "Intimidation +2"
-    senses = "Darkvision 60 ft., Passive Perception 10"
-    languages = "Common, Orc"
+    skills = 'Intimidation +2'
+    senses = 'Darkvision 60 ft., Passive Perception 10'
+    languages = 'Common, Orc'
     strength = Ability(16)
     dexterity = Ability(12)
     constitution = Ability(16)
@@ -237,40 +290,59 @@ class Orc(Monster):
     swim_speed = 0
     fly_speed = 0
     climb_speed = 0
+    burrow_speed = 0
     hp_max = 15
-    hit_dice = "2d8"
+    hit_dice = '2d8 + 6'
+    condition_immunities = ''
+    damage_immunities = ''
+    damage_resistances = ''
+    damage_vulnerabilities = ''
+    spells = []
 
 
 class Otyugh(Monster):
     """
-    Limited Telepathy.
 
-      The otyugh can magically transmit simple messages and images to any creature within 120 ft. of it that can understand a language. This form of telepathy doesn't allow the receiving creature to telepathically respond.
+    Limited Telepathy.
+      The otyugh can magically transmit simple messages and images to any
+      creature within 120 ft. of it that can understand a language. This
+      form of telepathy doesn't allow the receiving creature to
+      telepathically respond.
+
+    # Actions
 
     Multiattack.
-
-      The otyugh makes three attacks: one with its bite and two with its tentacles.
-
+      The otyugh makes three attacks: one with its bite and two with its
+      tentacles.
     Bite.
-
-      Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 12 (2d8 + 3) piercing damage. If the target is a creature, it must succeed on a DC 15 Constitution saving throw against disease or become poisoned until the disease is cured. Every 24 hours that elapse, the target must repeat the saving throw, reducing its hit point maximum by 5 (1d10) on a failure. The disease is cured on a success. The target dies if the disease reduces its hit point maximum to 0. This reduction to the target's hit point maximum lasts until the disease is cured.
-
+      Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 12 (2d8
+      + 3) piercing damage. If the target is a creature, it must succeed on
+      a DC 15 Constitution saving throw against disease or become poisoned
+      until the disease is cured. Every 24 hours that elapse, the target
+      must repeat the saving throw, reducing its hit point maximum by 5
+      (1d10) on a failure. The disease is cured on a success. The target
+      dies if the disease reduces its hit point maximum to 0. This reduction
+      to the target's hit point maximum lasts until the disease is cured.
     Tentacle.
-
-      Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 7 (1d8 + 3) bludgeoning damage plus 4 (1d8) piercing damage. If the target is Medium or smaller, it is grappled (escape DC 13) and restrained until the grapple ends. The otyugh has two tentacles, each of which can grapple one target.
-
+      Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 7 (1d8
+      + 3) bludgeoning damage plus 4 (1d8) piercing damage. If the target is
+      Medium or smaller, it is grappled (escape DC 13) and restrained until
+      the grapple ends. The otyugh has two tentacles, each of which can
+      grapple one target.
     Tentacle Slam.
-
-      The otyugh slams creatures grappled by it into each other or a solid surface. Each creature must succeed on a DC 14 Constitution saving throw or take 10 (2d6 + 3) bludgeoning damage and be stunned until the end of the otyugh's next turn. On a successful save, the target takes half the bludgeoning damage and isn't stunned.
+      The otyugh slams creatures grappled by it into each other or a solid
+      surface. Each creature must succeed on a DC 14 Constitution saving
+      throw or take 10 (2d6 + 3) bludgeoning damage and be stunned until the
+      end of the otyugh's next turn. On a successful save, the target takes
+      half the bludgeoning damage and isn't stunned.
     """
-
-    name = "Otyugh"
-    description = "Large aberration, neutral"
+    name = 'Otyugh'
+    description = 'Large aberration, neutral'
     challenge_rating = 5
     armor_class = 14
-    skills = ""
-    senses = "Darkvision 120 ft., Passive Perception 11"
-    languages = "Otyugh"
+    skills = ''
+    senses = 'Darkvision 120 ft., Passive Perception 11'
+    languages = 'Otyugh'
     strength = Ability(16)
     dexterity = Ability(11)
     constitution = Ability(19)
@@ -281,32 +353,39 @@ class Otyugh(Monster):
     swim_speed = 0
     fly_speed = 0
     climb_speed = 0
+    burrow_speed = 0
     hp_max = 114
-    hit_dice = "12d10"
+    hit_dice = '12d10 + 48'
+    condition_immunities = ''
+    damage_immunities = ''
+    damage_resistances = ''
+    damage_vulnerabilities = ''
+    spells = []
 
 
 class Owl(Monster):
     """
+
     Flyby.
-
-      The owl doesn't provoke opportunity attacks when it flies out of an enemy's reach.
-
+      The owl doesn't provoke opportunity attacks when it flies out of an
+      enemy's reach.
     Keen Hearing and Sight.
+      The owl has advantage on Wisdom (Perception) checks that rely on
+      hearing or sight.
 
-      The owl has advantage on Wisdom (Perception) checks that rely on hearing or sight.
+    # Actions
 
     Talons.
-
-      Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 1 slashing damage.
+      Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 1
+      slashing damage.
     """
-
-    name = "Owl"
-    description = "Tiny beast, unaligned"
+    name = 'Owl'
+    description = 'Tiny beast, unaligned'
     challenge_rating = 0
     armor_class = 11
-    skills = "Perception +3, Stealth +3"
-    senses = "Darkvision 120 ft., Passive Perception 13"
-    languages = ""
+    skills = 'Perception +3, Stealth +3'
+    senses = 'Darkvision 120 ft., Passive Perception 13'
+    languages = ''
     strength = Ability(3)
     dexterity = Ability(13)
     constitution = Ability(8)
@@ -317,36 +396,42 @@ class Owl(Monster):
     swim_speed = 0
     fly_speed = 60
     climb_speed = 0
+    burrow_speed = 0
     hp_max = 1
-    hit_dice = "1d4"
+    hit_dice = '1d4 + -1'
+    condition_immunities = ''
+    damage_immunities = ''
+    damage_resistances = ''
+    damage_vulnerabilities = ''
+    spells = []
 
 
 class Owlbear(Monster):
     """
-    Keen Sight and Smell.
 
-      The owlbear has advantage on Wisdom (Perception) checks that rely on sight or smell.
+    Keen Sight and Smell.
+      The owlbear has advantage on Wisdom (Perception) checks that rely on
+      sight or smell.
+
+    # Actions
 
     Multiattack.
-
-      The owlbear makes two attacks: one with its beak and one with its claws.
-
+      The owlbear makes two attacks: one with its beak and one with its
+      claws.
     Beak.
-
-      Melee Weapon Attack: +7 to hit, reach 5 ft., one creature. Hit: 10 (1d10 + 5) piercing damage.
-
+      Melee Weapon Attack: +7 to hit, reach 5 ft., one creature. Hit: 10
+      (1d10 + 5) piercing damage.
     Claws.
-
-      Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) slashing damage.
+      Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 14 (2d8
+      + 5) slashing damage.
     """
-
-    name = "Owlbear"
-    description = "Large monstrosity, unaligned"
+    name = 'Owlbear'
+    description = 'Large monstrosity, unaligned'
     challenge_rating = 3
     armor_class = 13
-    skills = "Perception +3"
-    senses = "Darkvision 60 ft., Passive Perception 13"
-    languages = ""
+    skills = 'Perception +3'
+    senses = 'Darkvision 60 ft., Passive Perception 13'
+    languages = ''
     strength = Ability(20)
     dexterity = Ability(12)
     constitution = Ability(17)
@@ -357,5 +442,11 @@ class Owlbear(Monster):
     swim_speed = 0
     fly_speed = 0
     climb_speed = 0
+    burrow_speed = 0
     hp_max = 59
-    hit_dice = "7d10"
+    hit_dice = '7d10 + 21'
+    condition_immunities = ''
+    damage_immunities = ''
+    damage_resistances = ''
+    damage_vulnerabilities = ''
+    spells = []

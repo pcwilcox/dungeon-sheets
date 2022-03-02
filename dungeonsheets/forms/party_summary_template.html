@@ -38,13 +38,17 @@
     <th>&nbsp;</th>
     <th>AC</th>
     <th>Pass. Per.</th>
+    <th>Pass. Ins.</th>
+    <th>Pass. Inv.</th>
     <th>Spell DC</th>
   </tr>
   [% for member in party %]
   <tr>
     <td>[[ member.name[:28] ]]</td>
     <td>[[ member.armor_class ]]</td>
-    <td>[[ member.perception.modifier + 10 ]]</td>
+    <td class="passive-perception">[[ member.passive_perception ]]</td>
+    <td class="passive-insight">[[ member.passive_insight ]]</td>
+    <td class="passive-investigation">[[ member.passive_investigation ]]</td>
     <td>[% for class in member.class_list %]
           [% if class.spellcasting_ability %] [[ member.spell_save_dc(class) ]], [% endif %]
         [% endfor %]
@@ -52,5 +56,29 @@
   </tr>
   [% endfor %]    
 </table>
+
+<!-- XP thresholds for the party -->
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Easy</th>
+    <th>Medium</th>
+    <th>Hard</th>
+    <th>Deadly</th>
+  </tr>
+  <tr>
+    <th>XP Threshold</th>
+    [% for threshold in party | xp_thresholds %]
+    <td>[[ "{:,}".format(threshold) ]]</td>
+    [% endfor %]
+  </tr>
+</table>
+
+<dl>
+[% for member in party %]
+<dt>[[ member.name ]]</dt>
+<dd>[[ member.languages ]]</dd>
+[% endfor %]
+</dl>
 
 [% endif %]
